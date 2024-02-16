@@ -8,12 +8,12 @@ int main(int argc, char *argv[])
     if (argc != 2 || !is_number(argv[1]))
     {
         printf("Usage: sleep <ticks>\n");
-        return 0;
+        exit(0);
     }
 
     int ticks = atoi(argv[1]);
 
     sleep(ticks);
 
-    return 0;
+    exit(0);
 }
