@@ -145,3 +145,17 @@ memcpy(void *dst, const void *src, uint n)
 {
   return memmove(dst, src, n);
 }
+
+int is_number(char *str)
+{
+  char current;
+  for (int i = 0; str[i]; i++)
+  {
+    current=str[i];
+    if (!(current=='0'||current=='1'||current=='2'||current=='3'||current=='4'||current=='5'||current=='6'||current=='7'||current=='8'||current=='9'))
+    {
+      return 0; //FALSE
+    }
+  }
+  return 1; //TRUE
+}
