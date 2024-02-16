@@ -190,6 +190,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_sleep\
 	$U/_lidor\
+	$U/_pingpong\
 
 
 
