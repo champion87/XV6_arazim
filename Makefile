@@ -193,6 +193,7 @@ UPROGS=\
 	$U/_pingpong\
 	$U/_primes\
 	$U/_sandbox\
+	$U/_find\
 
 
 
