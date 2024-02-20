@@ -1,17 +1,46 @@
-
 #include "kernel/types.h"
-#include "kernel/stat.h"
 #include "user/user.h"
+#include "kernel/fcntl.h"
 
-int main(int argc, char *argv[])
+#define LIMIT 35
+
+int main()
 {
-    int fd1 = dup(1);
-    int fd2 = dup(1);
-    int fd3 = dup(fd1);
+    int _;
+    int p[2];
+    pipe(p);
+    // printf("im main\n");
+    if (fork())
+    {
+        close(p[0]);
 
-    printf("%d\n", fd1);
-    printf("%d\n", fd2);
-    printf("%d\n", fd3);
-
-    return 0;
+        for (int i = 3; i < LIMIT; i++)
+        {
+            printf("sent i:%d\n", i);
+            write(p[1], &i, sizeof(int));
+        }
+        close(p[1]);
+        // printf("done sending\n");
+        wait(&_);
+        // printf("main is gone\n");
+        exit(0);
+    }
+    else
+    {
+        sleep(10);
+        close(p[1]);
+        // printf("Lets go sieve!\n");
+        int i;
+        while (read(p[0], &i, sizeof(int)))
+        {
+            if (i == 0)
+            {
+                printf("fuck\n");
+                exit(0);
+            }
+            printf("i:%d\n", i);
+        }
+        close(p[0]);
+    }
+    exit(0);
 }
