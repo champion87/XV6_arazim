@@ -9,5 +9,5 @@ typedef unsigned long uint64;
 
 typedef uint64 pde_t;
 
-// mine
+// my types.h
 typedef int LM_FILE;

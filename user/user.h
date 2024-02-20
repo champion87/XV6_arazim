@@ -40,5 +40,7 @@ int atoi(const char*);
 int memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
 
-// mine
+// my user.h
 int is_number(char *str);
+#define TRUE 1
+#define FALSE 0
