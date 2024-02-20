@@ -191,6 +191,8 @@ UPROGS=\
 	$U/_sleep\
 	$U/_lidor\
 	$U/_pingpong\
+	$U/_primes\
+	$U/_sandbox\
 
 
 
