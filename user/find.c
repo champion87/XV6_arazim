@@ -3,11 +3,29 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 
-char*
-fmtname(char *path)
+const char*
+getname(const char *path)
 {
     static char buf[DIRSIZ + 1];
-    char *p;
+    const char *p;
+
+    // Find first character after last slash.
+    for (p = path + strlen(path); p >= path && *p != '/'; p--)
+        ;
+    p++;
+
+    // Copy to buf
+    if (strlen(p) >= DIRSIZ)
+        return p;
+    memmove(buf, p, strlen(p));
+    return buf;
+}
+
+const char*
+fmtname(const char *path)
+{
+    static char buf[DIRSIZ + 1];
+    const char *p;
 
     // Find first character after last slash.
     for (p = path + strlen(path); p >= path && *p != '/'; p--)
@@ -22,7 +40,7 @@ fmtname(char *path)
     return buf;
 }
 
-void find_rec(char path[], char to_find[])
+void find_rec(const char path[], const char to_find[])
 {
     char buf[512], *p;
     int fd;
@@ -46,14 +64,11 @@ void find_rec(char path[], char to_find[])
     {
     case T_DEVICE:
     case T_FILE:
-        if (!strcmp(fmtname(path), to_find))
-            printf("%s\n", fmtname(path)); // GOTCHA!
+        if (!strcmp(getname(path), to_find))
+            printf("%s\n", getname(path)); // GOTCHA!
         break;
 
     case T_DIR:
-
-
-
         if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf)
         {
             printf("ls: path too long\n");
@@ -68,14 +83,10 @@ void find_rec(char path[], char to_find[])
                 continue;
             memmove(p, de.name, DIRSIZ);
             p[DIRSIZ] = 0;
-            if (stat(buf, &st) < 0)
-            {
-                printf("ls: cannot stat %s\n", buf);
-                continue;
-            }
-            // TODO self != . or ..
+            
+            if (!strcmp(getname(buf), ".") || !strcmp(getname(buf), "..")) { continue; }
+            // printf("lets go find_rec(%s, %s);\n", buf, to_find);
             find_rec(buf, to_find);
-            // printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
         }
         break;
     }
@@ -84,6 +95,12 @@ void find_rec(char path[], char to_find[])
 
 int main(int argc, char *argv[])
 {
-    if (argc) // TODO call find_rec with arguments
+    if (argc != 3) // TODO call find_rec with arguments
+    {
+        printf("Usage: find <dir> <name>\n");
+        exit(0);
+    }
+    find_rec(argv[1], argv[2]);
+
     exit(0);
 }
