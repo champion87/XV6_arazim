@@ -3,11 +3,21 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 
+void clear_buf(char buf[], int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        buf[i] = '\0';
+    }
+}
+
 const char*
 getname(const char *path)
 {
     static char buf[DIRSIZ + 1];
     const char *p;
+
+    clear_buf(buf, DIRSIZ + 1);
 
     // Find first character after last slash.
     for (p = path + strlen(path); p >= path && *p != '/'; p--)
@@ -64,8 +74,9 @@ void find_rec(const char path[], const char to_find[])
     {
     case T_DEVICE:
     case T_FILE:
+        // printf("is it %s?\n", getname(path)); // GOTCHA!
         if (!strcmp(getname(path), to_find))
-            printf("%s\n", getname(path)); // GOTCHA!
+            printf("%s\n", path); // GOTCHA!
         break;
 
     case T_DIR:
