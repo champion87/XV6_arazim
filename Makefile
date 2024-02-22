@@ -194,6 +194,7 @@ UPROGS=\
 	$U/_primes\
 	$U/_sandbox\
 	$U/_find\
+	$U/_xargs\
 
 
 
