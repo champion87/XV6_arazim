@@ -31,21 +31,14 @@ void print_arr(char *dest[], int len)
     }
 }
 
-void read_line_of_args(char **dest, int max_num_of_args, int arg_len /*includes null terminator*/)
+void read_lines_of_args(char **dest, int max_num_of_args, int arg_len /*includes null terminator*/)
 {
     int arg_num = 0;
     int i = 0;
     char c;
     while (1 == read(LM_STDIN, &c, 1))
     {
-        if (c == '\n') 
-        {
-            dest[arg_num][i] = '\0';
-            arg_num++;
-            break; 
-        }
-
-        if (c == ' ') 
+        if (c == ' ' || c == '\n') 
         {
             dest[arg_num][i] = '\0';
             arg_num++;
@@ -66,6 +59,9 @@ void read_line_of_args(char **dest, int max_num_of_args, int arg_len /*includes 
         }
 
     }
+    dest[arg_num][i] = '\0';
+    arg_num++;
+
     free(dest[arg_num]);
     dest[arg_num] = LM_NULL;
 }
@@ -100,7 +96,7 @@ int main(int argc, char *argv[])
 
     copy_ptrs(total_arguments, argv + 1, argc - 1);
 
-    read_line_of_args(total_arguments + argc - 1, MAXARG - (argc - 1), MAX_LEN_OF_ARG);
+    read_lines_of_args(total_arguments + argc - 1, MAXARG - (argc - 1), MAX_LEN_OF_ARG);
     
 
     int _;

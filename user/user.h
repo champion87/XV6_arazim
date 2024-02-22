@@ -44,3 +44,8 @@ void *memcpy(void *, const void *, uint);
 int is_number(char *str);
 #define TRUE 1
 #define FALSE 0
+
+#define LM_STDIN 0 
+#define LM_STDOUT 1
+#define LM_STDERR 2
+#define LM_NULL 0 

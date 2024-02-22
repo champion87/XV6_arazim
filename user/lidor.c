@@ -4,8 +4,10 @@
 
 #define LIMIT 35
 
+char str[10];
+
 int main()
 {
-    printf("%d\n", !strcmp(".", "."));
+    free(LM_NULL);
     exit(0);
 }
