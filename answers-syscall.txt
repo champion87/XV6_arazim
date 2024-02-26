@@ -1,0 +1,6 @@
+usertrap
+the value is 7, which is the opcode for the 'exec' syscall.
+the register is 0b100010 so the SPP bit is off, it means that we're in user mode.
+a3 is the modified register
+phisical adresses 1 to 0x1000 are not used nor mapped. Scause is "access fault in ranslation" - as we expected.
+initcode was the running proccess with pid 1.
