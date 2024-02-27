@@ -1,0 +1,4 @@
+fstat, we can store at the shared page all the information fstat fetches.
+
+the three last pages are the trampoline, trapframe, and the guard page.
+first is text

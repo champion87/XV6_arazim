@@ -71,10 +71,70 @@ sys_sleep(void)
 
 
 #ifdef LAB_PGTBL
-int
+
+
+
+#define LM_MAX_PAGES (8 * sizeof(uint64) )
+typedef uint64 bitmask;
+
+#define IS_ACC(pte) ((pte & PTE_A) != 0)
+#define BUF_LEN(n) (n % 8 ? n/8 +1 : n/8)
+
+
+void write_to_bitmask(bitmask *dest, int bit_num, int value)
+{
+  if (value)
+  {
+    *dest = *dest | (1 << bit_num);
+  }
+  else
+  {
+    *dest = *dest & ~(1 << bit_num);
+  }
+}
+
+void clear_acc(pte_t *pte)
+{
+  *pte &= ~PTE_A;
+}
+
+int // assumes the buffer is of size ceil(n / 8) here n is the number of pages to check
 sys_pgaccess(void)
 {
-  // lab pgtbl: your code here.
+  bitmask res;
+  int is_acc;
+  pte_t *pointer_to_current_pte;
+  pagetable_t pt = myproc()->pagetable;
+
+  uint64 current_va;
+  argaddr(0, &current_va);
+
+  int num_pages_to_check;
+  argint(1, &num_pages_to_check);
+
+  uint64 user_buffer;
+  argaddr(2, &user_buffer);
+
+  if (!(0 <= num_pages_to_check && num_pages_to_check <= LM_MAX_PAGES))
+  {
+    printf("Too many pages for pgaccess!\n");
+    return -1;
+  }
+
+  for (int i = 0; i < num_pages_to_check; i++)
+  {
+    pointer_to_current_pte = walk(pt, current_va + i*PGSIZE, 0);// TODO given a virtual address, get pte
+    // TODO should I take walk earlier and index the result?
+
+    printf("%p\n", pointer_to_current_pte);
+
+    is_acc = IS_ACC(*pointer_to_current_pte);
+    clear_acc(pointer_to_current_pte); // TODO args
+    write_to_bitmask(&res, i, is_acc);
+  }
+
+  copyout(pt, user_buffer, (char *) (&res), BUF_LEN(num_pages_to_check));
+
   return 0;
 }
 #endif
