@@ -437,3 +437,44 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+
+void print_entry(pagetable_t pt, int layer, int index)
+{
+  for (int i = 0; i < layer; i++)
+  {
+    printf(" ..");
+  }
+  printf("%d: pte %p pa %p\n", index, pt, PTE2PA((uint64) pt));
+}
+
+// prints all sons of pt
+void print_pt_rec(pagetable_t pt, int layer)
+{
+  if (layer > 3)
+  {
+    return;
+  }
+
+  // there are 2^9 = 512 PTEs in a page table.
+  for(int i = 0; i < 512; i++){
+    pte_t pte = pt[i];
+    
+
+    // the valid bit is on, and one of R,W,X are on, too.
+    // that is, pte points towards a page table.
+    if((pte & PTE_V)){
+      print_entry((pagetable_t) pte, layer, i);
+
+      // this PTE points to a lower-level page table.
+      uint64 child = PTE2PA(pte);
+      print_pt_rec((pagetable_t)child, layer + 1);
+    }
+  }
+}
+
+void vmprint(pagetable_t pt)
+{
+  printf("page table %p\n", pt);
+
+  print_pt_rec(pt, 1);
+}
